@@ -34,14 +34,13 @@
 // Global Variables
 /********************************************************************/
 
-uint ledCount = 0;
-uint lastPressed = 0b00000000;
+unsigned int lastPressed = 0b00000000;
 
 /********************************************************************/
 // Constants
 /********************************************************************/
 
-const uint tier = 1;
+const uint tier = 2;
 
 /********************************************************************/
 // Main Entry
@@ -58,6 +57,7 @@ void main(void)
   // one-time initializations
   /********************************************************************/
   SWL_Init();
+  unsigned int onLEDs = 2;
 
   /********************************************************************/
   // main program loop
@@ -77,25 +77,37 @@ void main(void)
     if(tier == 1){
       if(SWL_Pushed(SWL_LEFT)){
         SWL_ON(SWL_RED);
-      }else{
-        SWL_OFF(SWL_RED);
       }
 
       if(SWL_Pushed(SWL_CTR)){
         SWL_ON(SWL_YELLOW);
-      }else{
-        SWL_OFF(SWL_YELLOW);
       }
 
       if(SWL_Pushed(SWL_RIGHT)){
         SWL_ON(SWL_GREEN);
-      }else{
-        SWL_OFF(SWL_GREEN);
+      }
+
+      if(SWL_Pushed(SWL_UP) || SWL_Pushed(SWL_DOWN)){
+        SWL_OFF(SWL_ALL);
       }
     }
 
     if(tier == 2){
-      
+      if(SWL_Pushed(SWL_LEFT) && (lastPressed && SWL_LEFT) <= 0){
+        if((PT1AD1 && SWL_RED) <= 0 && onLEDs < 2){
+          SWL_TOG(SWL_RED);
+          onLEDs += 1;
+        } else if((PT1AD1 && SWL_RED) > 0){
+          SWL_TOG(SWL_RED);
+          onLEDs -= 1;
+        }
+        
+        lastPressed += SWL_LEFT;
+      }
+
+      if(!SWL_Pushed(SWL_LEFT) && (lastPressed && SWL_LEFT) > 0){
+        lastPressed -= SWL_LEFT;
+      }
     }
     
   }                   

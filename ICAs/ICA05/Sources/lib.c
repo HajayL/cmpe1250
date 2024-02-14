@@ -4,7 +4,7 @@
 
 void SWL_Init(){
     DDR1AD1 = SWL_ALL;
-    PT1AD1 = 0b00000000;
+    PT1AD1 = 0b01100000;
     ATD1DIEN1 = 0b00011111;
 }
 
